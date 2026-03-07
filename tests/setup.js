@@ -1,3 +1,16 @@
-import app from "../src/app.js";
+import "dotenv/config";
+import mongoose from "mongoose";
 
-export default app;
+beforeAll(async () => {
+	await mongoose.connect(process.env.MONGO_URI);
+	await Promise.all(
+		Object.values(mongoose.connection.collections).map((collection) => collection.deleteMany({}))
+	);
+});
+
+afterAll(async () => {
+	await Promise.all(
+		Object.values(mongoose.connection.collections).map((collection) => collection.deleteMany({}))
+	);
+	await mongoose.disconnect();
+});
